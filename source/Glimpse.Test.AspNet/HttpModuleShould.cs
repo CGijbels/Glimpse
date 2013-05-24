@@ -1,6 +1,11 @@
 ﻿using System;
+using System.IO;
+using System.Web;
 using Glimpse.AspNet;
+using Glimpse.AspNet.Extensions;
+using Glimpse.Core.Framework;
 using Glimpse.Test.AspNet.Tester;
+using Glimpse.Test.Common;
 using Xunit;
 using Moq;
 
@@ -26,15 +31,67 @@ namespace Glimpse.Test.AspNet
         {
             var runtime = HttpModule.GetRuntime(HttpModule.AppStateMock.Object);
 
-            Assert.Equal(HttpModule.RuntimeMock.Object, runtime);
+            Assert.Equal(HttpModule.GlimpseRuntimeWrapper, runtime);
         }
 
         [Fact]
         public void CallGlimpseRuntimeBeginRequestOnBeginRequest()
         {
-            HttpModule.BeginRequest(HttpModule.ContextMock.Object);
-
+            HttpModule.AppMock.Raise(m=> m.BeginRequest += null, EventArgs.Empty);
             HttpModule.RuntimeMock.Verify(r=>r.BeginRequest(), Times.Once());
+        }
+
+        [Fact]
+        public void CallGlimpseRuntimeBeginRequestOnlyOnceEvenIfBeginRequestIsRaisedTwice()
+        {
+            HttpModule.AppMock.Raise(m => m.BeginRequest += null, EventArgs.Empty);
+            HttpModule.AppMock.Raise(m => m.BeginRequest += null, EventArgs.Empty);
+            HttpModule.RuntimeMock.Verify(r => r.BeginRequest(), Times.Once());
+        }
+
+        [Fact]
+        public void CallGlimpseRuntimeBeginSessionAccessOnPostAcquireRequestState()
+        {
+            HttpModule.AppMock.Raise(m => m.PostAcquireRequestState += null, EventArgs.Empty);
+            HttpModule.RuntimeMock.Verify(r => r.BeginSessionAccess(), Times.Once());
+        }
+
+        [Fact]
+        public void CallGlimpseRuntimeBeginSessionAccessOnlyOnceEvenIfPostAcquireRequestStateIsRaisedTwice()
+        {
+            HttpModule.AppMock.Raise(m => m.PostAcquireRequestState += null, EventArgs.Empty);
+            HttpModule.AppMock.Raise(m => m.PostAcquireRequestState += null, EventArgs.Empty);
+            HttpModule.RuntimeMock.Verify(r => r.BeginSessionAccess(), Times.Once());
+        }
+
+        [Fact]
+        public void CallGlimpseRuntimeBeginSessionAccessOnPostRequestHandlerExecute()
+        {
+            HttpModule.AppMock.Raise(m => m.PostRequestHandlerExecute += null, EventArgs.Empty);
+            HttpModule.RuntimeMock.Verify(r => r.EndSessionAccess(), Times.Once());
+        }
+
+        [Fact]
+        public void CallGlimpseRuntimeBeginSessionAccessOnlyOnceEvenIfPostRequestHandlerExecuteIsRaisedTwice()
+        {
+            HttpModule.AppMock.Raise(m => m.PostRequestHandlerExecute += null, EventArgs.Empty);
+            HttpModule.AppMock.Raise(m => m.PostRequestHandlerExecute += null, EventArgs.Empty);
+            HttpModule.RuntimeMock.Verify(r => r.EndSessionAccess(), Times.Once());
+        }
+
+        [Fact]
+        public void CallGlimpseRuntimeBeginSessionAccessOnPostReleaseRequestState()
+        {
+            HttpModule.AppMock.Raise(m => m.PostReleaseRequestState += null, EventArgs.Empty);
+            HttpModule.RuntimeMock.Verify(r => r.EndRequest(), Times.Once());
+        }
+
+        [Fact]
+        public void CallGlimpseRuntimeBeginSessionAccessOnlyOnceEvenIfPostReleaseRequestStateIsRaisedTwice()
+        {
+            HttpModule.AppMock.Raise(m => m.PostReleaseRequestState += null, EventArgs.Empty);
+            HttpModule.AppMock.Raise(m => m.PostReleaseRequestState += null, EventArgs.Empty);
+            HttpModule.RuntimeMock.Verify(r => r.EndRequest(), Times.Once());
         }
 
         [Fact]
@@ -44,12 +101,12 @@ namespace Glimpse.Test.AspNet
         }
 
         [Fact]
-        public void LogOnAppDomainUnload()
+        public void LogAppDomainUnload()
         {
             var currentDomain = AppDomain.CurrentDomain;
             currentDomain.SetData(Constants.LoggerKey, HttpModule.LoggerMock.Object);
 
-            HttpModule.UnloadDomain(currentDomain, null);
+            Glimpse.AspNet.HttpModule.OnDomainUnload(currentDomain);
 
             HttpModule.LoggerMock.Verify(l => l.Fatal(It.IsAny<string>(), It.IsAny<object[]>()));
         }

@@ -61,6 +61,60 @@ namespace Glimpse.AspNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Already processed event &apos;{0}&apos; of &apos;{1}&apos; (#{2}), therefore bypassing the event handling.
+        /// </summary>
+        internal static string GlimpseRuntimeWrapperAlreadyHandledEvent {
+            get {
+                return ResourceManager.GetString("GlimpseRuntimeWrapperAlreadyHandledEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Glimpse.AspNet.GlimpseRuntimeWrapper : Executing default resource.
+        /// </summary>
+        internal static string GlimpseRuntimeWrapperExecuteDefaultResource {
+            get {
+                return ResourceManager.GetString("GlimpseRuntimeWrapperExecuteDefaultResource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Executing resource &apos;{0}&apos;.
+        /// </summary>
+        internal static string GlimpseRuntimeWrapperExecuteResource {
+            get {
+                return ResourceManager.GetString("GlimpseRuntimeWrapperExecuteResource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Handling event &apos;{0}&apos; of &apos;{1}&apos; (#{2}).
+        /// </summary>
+        internal static string GlimpseRuntimeWrapperHandlingEvent {
+            get {
+                return ResourceManager.GetString("GlimpseRuntimeWrapperHandlingEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Glimpse.AspNet.HttpModule : Init called on &apos;{0}&apos; (#{1}) for &apos;{2}&apos; (#{3}).
+        /// </summary>
+        internal static string HttpModuleInitIsCalled {
+            get {
+                return ResourceManager.GetString("HttpModuleInitIsCalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Glimpse.AspNet.HttpModule : &apos;{0}&apos; instantiated and added to &apos;{1}&apos; (#{2}).
+        /// </summary>
+        internal static string HttpModuleInstantiatedGlimpseRuntimeWrapper {
+            get {
+                return ResourceManager.GetString("HttpModuleInstantiatedGlimpseRuntimeWrapper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Glimpse runtime has not been initialized..
         /// </summary>
         internal static string ProcessRequestMissingRuntime {
